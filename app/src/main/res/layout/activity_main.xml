@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/bases_of_pyramids"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_margin="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingClass">
+
+        <ImageView
+            android:id="@+id/base1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/base1"
+            android:src="@drawable/base"
+            app:layout_constraintEnd_toStartOf="@+id/base2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/base2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/base2"
+            android:src="@drawable/base"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/small_ring"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="56dp"
+            android:contentDescription="@string/small_ring"
+            android:src="@drawable/circle_small"
+            app:layout_constraintBottom_toTopOf="@+id/medium_ring"
+            app:layout_constraintEnd_toEndOf="@+id/medium_ring"
+            app:layout_constraintHorizontal_bias="0.454"
+            app:layout_constraintStart_toStartOf="@+id/medium_ring"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <ImageView
+            android:id="@+id/medium_ring"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/medium_ring"
+            android:src="@drawable/circle_medium"
+            app:layout_constraintBottom_toTopOf="@+id/large_ring"
+            app:layout_constraintEnd_toEndOf="@+id/large_ring"
+            app:layout_constraintHorizontal_bias="0.507"
+            app:layout_constraintStart_toStartOf="@+id/large_ring" />
+
+        <ImageView
+            android:id="@+id/large_ring"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="68dp"
+            android:contentDescription="@string/large_ring"
+            android:src="@drawable/circle_big"
+            app:layout_constraintBottom_toBottomOf="@+id/base1"
+            app:layout_constraintEnd_toEndOf="@+id/base1"
+            app:layout_constraintStart_toStartOf="@+id/base1" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

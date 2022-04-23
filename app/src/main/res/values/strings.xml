@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Hanoi Towers App</string>
+    <string name="base1">The first base of the pyramids</string>
+    <string name="base2">The second base of the pyramids</string>
+    <string name="base3">The third base of the pyramids</string>
+    <string name="small_ring">Small pyramid ring</string>
+    <string name="medium_ring">Medium pyramid ring</string>
+    <string name="large_ring">Large pyramid ring</string>
+</resources>
