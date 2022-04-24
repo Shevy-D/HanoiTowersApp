@@ -9,13 +9,13 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.v4.content.res.ResourcesCompat
+import android.util.Log
 import android.view.DragEvent
 import android.view.View
 import android.widget.Toast
 import com.shevy.hanoitowersapp.databinding.ActivityMainBinding
 
 private lateinit var binding: ActivityMainBinding
-
 
 
 class MainActivity : AppCompatActivity() {
@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         attachViewDragListener()
-
         binding.basesOfPyramids.setOnDragListener(ringDragListener)
     }
 
@@ -70,30 +69,34 @@ class MainActivity : AppCompatActivity() {
                 binding.largeRing.alpha = 1.0f
                 //on drop event in the target drop area, read the data and
                 // re-position the ring in it's new location
-                if (dragEvent.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                    val draggedData = dragEvent.clipData.getItemAt(0).text
-                    //println("draggedData $draggedData")
+                if (checkIfRingIsOnBase(dragEvent)) {
+                    if (dragEvent.clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+                        val draggedData = dragEvent.clipData.getItemAt(0).text
+                        //println("draggedData $draggedData")
+                    }
+
+                    //re-position the ring in the updated x, y co-ordinates
+                    // with ring center position pointing to new x,y co-ordinates
+                    draggableItem.x = dragEvent.x - (draggableItem.width / 2)
+                    draggableItem.y = dragEvent.y - (draggableItem.height / 2)
+
+                    //on drop event remove the ring from parent viewGroup
+                    val parent = draggableItem.parent as ConstraintLayout
+                    parent.removeView(draggableItem)
+
+                    //add the ring view to a new viewGroup where the ring was dropped
+                    val dropArea = view as ConstraintLayout
+                    dropArea.addView(draggableItem)
                 }
-                //re-position the ring in the updated x, y co-ordinates
-                // with ring center position pointing to new x,y co-ordinates
-                draggableItem.x = dragEvent.x - (draggableItem.width / 2)
-                draggableItem.y = dragEvent.y - (draggableItem.height / 2)
-
-                //on drop event remove the ring from parent viewGroup
-                val parent = draggableItem.parent as ConstraintLayout
-                parent.removeView(draggableItem)
-
-                //add the ring view to a new viewGroup where the ring was dropped
-                val dropArea = view as ConstraintLayout
-                dropArea.addView(draggableItem)
 
                 checkIfRingIsOnBase(dragEvent)
-                true
+                //true
             }
             DragEvent.ACTION_DRAG_ENDED -> {
                 draggableItem.visibility = View.VISIBLE
                 view.invalidate()
-                true
+                //true
+                checkIfRingIsOnBase(dragEvent)
             }
             else -> {
                 false
@@ -107,7 +110,7 @@ class MainActivity : AppCompatActivity() {
      *
      * @param dragEvent DragEvent
      */
-    private fun checkIfRingIsOnBase(dragEvent: DragEvent) {
+    private fun checkIfRingIsOnBase(dragEvent: DragEvent): Boolean {
         //x,y co-ordinates left-top point
         val faceXStart = binding.base2.x
         val faceYStart = binding.base2.y
@@ -116,13 +119,93 @@ class MainActivity : AppCompatActivity() {
         val faceXEnd = faceXStart + binding.base2.width
         val faceYEnd = faceYStart + binding.base2.height
 
-        val toastMsg = if (dragEvent.x in faceXStart..faceXEnd && dragEvent.y in faceYStart..faceYEnd){
-            ringOn
+        val toastMsg =
+            if (dragEvent.x in faceXStart..faceXEnd && dragEvent.y in faceYStart..faceYEnd) {
+                ringOn
+            } else {
+                ringOff
+            }
+        //Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
+
+/*        Log.d("testLog", "View1 = $view")
+        Log.d("testLog", "dragEvent1 = $dragEvent")*/
+
+        //x,y co-ordinates left-top point
+        val ringSmallXStart = binding.smallRing.x
+        val ringSmallYStart = binding.smallRing.y
+
+        val ringMediumXStart = binding.mediumRing.x
+        val ringMediumYStart = binding.mediumRing.y
+
+        val ringLargeXStart = binding.largeRing.x
+        val ringLargeYStart = binding.largeRing.y
+
+        //x,y co-ordinates bottom-end point
+        val ringSmallXEnd = faceXStart + binding.smallRing.width
+        val ringSmallYEnd = faceYStart + binding.smallRing.height
+
+        val ringMediumXEnd = faceXStart + binding.mediumRing.width
+        val ringMediumYEnd = faceYStart + binding.mediumRing.height
+
+        val ringLargeXEnd = faceXStart + binding.largeRing.width
+        val ringLargeYEnd = faceYStart + binding.largeRing.height
+
+/*
+        Log.d(
+            "testLog",
+            "ringMediumYStart = $ringMediumYStart, ringMediumYEnd = $ringMediumYEnd, binding.mediumRing.width = ${binding.mediumRing.width} "
+        )
+        Log.d(
+            "testLog",
+            "ringSmallYStart = $ringSmallYStart, ringSmallYEnd = $ringSmallYEnd, binding.smallRing.width = ${binding.smallRing.width} "
+        )
+        Log.d(
+            "testLog",
+            "ringMediumXStart = $ringMediumXStart, ringMediumXEnd = $ringMediumXEnd, binding.mediumRing.height = ${binding.mediumRing.height} "
+        )
+        Log.d(
+            "testLog",
+            "ringSmallXStart = $ringSmallXStart, ringSmallXEnd = $ringSmallXEnd, binding.smallRing.height = ${binding.smallRing.height} "
+        )
+*/
+
+        if (ringSmallXStart in ringMediumXStart..ringMediumXEnd && ringSmallXStart in ringLargeXStart..ringLargeXEnd) {
+            return if (ringSmallYStart < ringMediumYStart && ringSmallYStart < ringLargeYStart) {
+                Toast.makeText(this, "All right", Toast.LENGTH_LONG)
+                    .show()
+                true
+            } else {
+                Toast.makeText(this, "You can't do it", Toast.LENGTH_LONG)
+                    .show()
+                false
+            }
+        } else if (ringSmallXStart in ringLargeXStart..ringLargeXEnd) {
+            return if (ringSmallYStart < ringLargeYStart) {
+                Toast.makeText(this, "All right", Toast.LENGTH_LONG)
+                    .show()
+                true
+            } else {
+                Toast.makeText(this, "You can't do it", Toast.LENGTH_LONG)
+                    .show()
+                false
+            }
+        } else if (ringSmallXStart in ringMediumXStart..ringMediumXEnd) {
+            return if (ringSmallYStart < ringMediumYStart) {
+                Toast.makeText(this, "All right", Toast.LENGTH_LONG)
+                    .show()
+                true
+            } else {
+                Toast.makeText(this, "You can't do it", Toast.LENGTH_LONG)
+                    .show()
+                false
+            }
         } else {
-            ringOff
+            Toast.makeText(this, "HZ", Toast.LENGTH_LONG)
+                .show()
+            return false
         }
-        Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
     }
+
 
     /**
      * Method enables drag feature on the draggable view
@@ -233,10 +316,22 @@ class MainActivity : AppCompatActivity() {
 private class RingDragShadowBuilder(view: View) : View.DragShadowBuilder(view) {
 
     //set shadow to be the actual mask
-    private val shadow = when(view){
-        binding.smallRing -> ResourcesCompat.getDrawable(view.context.resources, R.drawable.circle_small, view.context.theme)
-        binding.mediumRing -> ResourcesCompat.getDrawable(view.context.resources, R.drawable.circle_medium, view.context.theme)
-        else -> ResourcesCompat.getDrawable(view.context.resources, R.drawable.circle_big, view.context.theme)
+    private val shadow = when (view) {
+        binding.smallRing -> ResourcesCompat.getDrawable(
+            view.context.resources,
+            R.drawable.circle_small,
+            view.context.theme
+        )
+        binding.mediumRing -> ResourcesCompat.getDrawable(
+            view.context.resources,
+            R.drawable.circle_medium,
+            view.context.theme
+        )
+        else -> ResourcesCompat.getDrawable(
+            view.context.resources,
+            R.drawable.circle_big,
+            view.context.theme
+        )
     }
 
     // Defines a callback that sends the drag shadow dimensions and touch point back to the
