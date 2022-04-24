@@ -57,10 +57,13 @@ class MainActivity : AppCompatActivity() {
                 binding.base1.alpha = 1.0f
                 binding.mediumRing.alpha = 1.0f
                 binding.largeRing.alpha = 1.0f
-                //when ring exits drop-area without dropping set mask visibility to VISIBLE
+                //when ring exits drop-area without dropping set ring visibility to VISIBLE
+                if (checkIfRingIsOnBase(dragEvent)) {
                 draggableItem.visibility = View.VISIBLE
                 view.invalidate()
-                true
+                }
+                checkIfRingIsOnBase(dragEvent)
+                //true
             }
             DragEvent.ACTION_DROP -> {
                 // reset opacity if the ring is dropped
@@ -114,12 +117,12 @@ class MainActivity : AppCompatActivity() {
      */
     private fun checkIfRingIsOnBase(dragEvent: DragEvent): Boolean {
         //x,y co-ordinates left-top point
-        val faceXStart = binding.base2.x
-        val faceYStart = binding.base2.y
+        val base2XStart = binding.base2.x
+        val base2YStart = binding.base2.y
 
         //x,y co-ordinates bottom-end point
-        val faceXEnd = faceXStart + binding.base2.width
-        val faceYEnd = faceYStart + binding.base2.height
+        val base2XEnd = base2XStart + binding.base2.width
+        val base2YEnd = base2YStart + binding.base2.height
 
 /*        val toastMsg =
             if (dragEvent.x in faceXStart..faceXEnd && dragEvent.y in faceYStart..faceYEnd) {
@@ -143,14 +146,14 @@ class MainActivity : AppCompatActivity() {
         val ringLargeYStart = binding.largeRing.y
 
         //x,y co-ordinates bottom-end point
-        val ringSmallXEnd = faceXStart + binding.smallRing.width
-        val ringSmallYEnd = faceYStart + binding.smallRing.height
+        val ringSmallXEnd = ringSmallXStart + binding.smallRing.width
+        val ringSmallYEnd = ringSmallYStart + binding.smallRing.height
 
-        val ringMediumXEnd = faceXStart + binding.mediumRing.width
-        val ringMediumYEnd = faceYStart + binding.mediumRing.height
+        val ringMediumXEnd = ringMediumXStart + binding.mediumRing.width
+        val ringMediumYEnd = ringMediumYStart + binding.mediumRing.height
 
-        val ringLargeXEnd = faceXStart + binding.largeRing.width
-        val ringLargeYEnd = faceYStart + binding.largeRing.height
+        val ringLargeXEnd = ringLargeXStart + binding.largeRing.width
+        val ringLargeYEnd = ringLargeYStart + binding.largeRing.height
 
 /*
         Log.d(
@@ -183,7 +186,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "You can't do it", Toast.LENGTH_LONG)
                     .show()
-                false
+                return false
             }
         } else if (ringSmallXStart in ringLargeXStart..ringLargeXEnd) {
             return if (ringSmallYStart < ringLargeYStart) {
@@ -193,7 +196,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "You can't do it", Toast.LENGTH_LONG)
                     .show()
-                false
+                return false
             }
         } else if (ringSmallXStart in ringMediumXStart..ringMediumXEnd) {
             return if (ringSmallYStart < ringMediumYStart) {
@@ -203,7 +206,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "You can't do it", Toast.LENGTH_LONG)
                     .show()
-                false
+                return false
             }
         } else {
             Toast.makeText(this, "HZ", Toast.LENGTH_LONG)
