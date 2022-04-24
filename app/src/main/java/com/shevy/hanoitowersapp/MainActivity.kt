@@ -94,7 +94,9 @@ class MainActivity : AppCompatActivity() {
             }
             DragEvent.ACTION_DRAG_ENDED -> {
                 draggableItem.visibility = View.VISIBLE
-                view.invalidate()
+                if (checkIfRingIsOnBase(dragEvent)) {
+                    view.invalidate()
+                }
                 //true
                 checkIfRingIsOnBase(dragEvent)
             }
@@ -119,12 +121,12 @@ class MainActivity : AppCompatActivity() {
         val faceXEnd = faceXStart + binding.base2.width
         val faceYEnd = faceYStart + binding.base2.height
 
-        val toastMsg =
+/*        val toastMsg =
             if (dragEvent.x in faceXStart..faceXEnd && dragEvent.y in faceYStart..faceYEnd) {
                 ringOn
             } else {
                 ringOff
-            }
+            }*/
         //Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
 
 /*        Log.d("testLog", "View1 = $view")
@@ -169,7 +171,11 @@ class MainActivity : AppCompatActivity() {
         )
 */
 
-        if (ringSmallXStart in ringMediumXStart..ringMediumXEnd && ringSmallXStart in ringLargeXStart..ringLargeXEnd) {
+        if (ringSmallXStart !in ringMediumXStart..ringMediumXEnd && ringSmallXStart !in ringLargeXStart..ringLargeXEnd) {
+                Toast.makeText(this, "All right", Toast.LENGTH_LONG)
+                    .show()
+                return true
+        } else if (ringSmallXStart in ringMediumXStart..ringMediumXEnd && ringSmallXStart in ringLargeXStart..ringLargeXEnd) {
             return if (ringSmallYStart < ringMediumYStart && ringSmallYStart < ringLargeYStart) {
                 Toast.makeText(this, "All right", Toast.LENGTH_LONG)
                     .show()
